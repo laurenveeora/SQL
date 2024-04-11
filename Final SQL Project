@@ -1,0 +1,67 @@
+# For this project I downloaded a dataset called "chinook" from Kaggle. 
+# It contains data from a digital media store and includes tables for artists, albums, media tracks, invoices, and customers.
+# I utilized SQL to analyze the dataset, and crafted questions aimed at gaining insights for the digital media store.
+
+
+#1. Find the Invoices of customers who are from Brazil. The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+SELECT 
+cust.FirstName, 
+cust.LastName, 
+inv.InvoiceId, 
+inv.BillingCountry, 
+inv.InvoiceDate
+FROM chinook.invoices as inv 
+LEFT JOIN chinook.customers as cust 
+on inv.CustomerId = cust.CustomerId 
+WHERE inv.BillingCountry = "Brazil";
+
+#2. How many Invoices were there in 2009?
+SELECT COUNT(*)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#3. What are the total sales for 2009?
+SELECT SUM(Total)
+FROM chinook.Invoices
+WHERE InvoiceDate BETWEEN '2009-01-01' AND '2009-12-31';
+
+#4. Write a query that includes the purchased track name with each invoice line ID.
+SELECT t.Name, i.InvoiceLineId
+FROM chinook.Invoice_items i
+JOIN chinook.Tracks t 
+ON i.TrackId = t.TrackId;
+
+#5. Find the total amount of each invoice, along with the customer's first and last names, their country, and the name of the sales agent associated with each invoice
+SELECT 
+    emp.LastName AS "Sales Agent Last Name",
+    emp.Firstname AS "Sales Agent First Name",
+    cust.FirstName AS "Customer First Name",
+    cust.LastName AS "Customer Last Name",
+    cust.Country AS "Customer Country",
+    inv.total AS "Invoice Total"
+FROM chinook.employees emp 
+JOIN chinook.Customers cust ON cust.SupportRepId = emp.EmployeeId
+JOIN chinook.Invoices inv ON inv.CustomerId = cust.CustomerId;
+
+#6. Show the Employees who are Sales Agents.
+SELECT * FROM chinook.Employees
+WHERE Title = "Sales Support Agent" ;
+
+#7. Who was the first Sales Agent that was hired?
+SELECT 
+LastName,
+FirstName,
+HireDate,
+FROM chinook.employees DESC
+WHERE Title = "Sales Support Agent"
+LIMIT 1;
+
+#8. Which employees reside in Lethbridge? And what are their titles?
+SELECT 
+LastName,
+FirstName, 
+City, 
+Title
+FROM chinook.employees
+WHERE City = "Lethbridge";
+
